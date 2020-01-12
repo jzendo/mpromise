@@ -1,0 +1,31 @@
+{
+  "name": "mpromise",
+  "version": "0.0.1",
+  "main": "./src",
+  "license": "MIT",
+  "author": "nobody",
+  "scripts": {
+    "build": "npm run build:default && npm run build:extend",
+    "build:default": "cross-env NODE_ENV=production parcel build src/index.js --global Promise",
+    "build:extend": "cross-env NODE_ENV=production parcel build src/extend.js --global Promise",
+    "lint": "standard src/**/* test/**/*",
+    "lint:fix": "standard --fix src/**/* test/**/*",
+    "test": "babel src/** test/** -d es5 && node es5/test/aplus_test.js",
+    "unit:test": "jest"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-es2015-block-scoping": "^6.26.0",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "jest": "^24.9.0",
+    "parcel-bundler": "^1.12.4",
+    "promises-aplus-tests": "*",
+    "standard": "^14.3.1"
+  }
+}
