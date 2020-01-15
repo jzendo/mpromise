@@ -1,9 +1,10 @@
 {
   "name": "mpromise",
+  "description": "A Promises/A+ implement. Read https://promisesaplus.com/ for more.",
   "version": "0.0.1",
   "main": "./src",
   "license": "MIT",
-  "author": "nobody",
+  "author": "zendo",
   "scripts": {
     "build": "npm run build:default && npm run build:extend",
     "build:default": "cross-env NODE_ENV=production parcel build src/index.js --global Promise",
