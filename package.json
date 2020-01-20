@@ -1,7 +1,7 @@
 {
   "name": "mpromise",
   "description": "A Promises/A+ implement. Read https://promisesaplus.com/ for more.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./src",
   "license": "MIT",
   "author": "zendo",
