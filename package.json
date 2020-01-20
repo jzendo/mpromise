@@ -6,7 +6,8 @@
   "license": "MIT",
   "author": "zendo <zendo@example.com>",
   "scripts": {
-    "build": "npm run build:default && npm run build:extend",
+    "build": "npm run build:default && npm run build:extend && npm run build:gzip",
+    "build:gzip": "node ./scripts/gzip.js",
     "build:default": "cross-env NODE_ENV=production_base parcel build src/index.js --global Promise",
     "build:extend": "cross-env NODE_ENV=production_extend parcel build src/extend.js --global Promise",
     "lint": "standard src/**/* test/**/*",
