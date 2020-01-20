@@ -1,4 +1,4 @@
-import PromiseBase, { defer } from './index'
+import PromiseBase from './index'
 import { teardownDeferThrow } from './util'
 
 function checkIterable (iterable) {
@@ -21,7 +21,6 @@ function checkIterable (iterable) {
 export default class Promise extends PromiseBase {
   constructor(fn) {
     super(fn)
-    this.promiseConstructor_ = Promise
   }
 
   /**
@@ -106,6 +105,14 @@ export default class Promise extends PromiseBase {
   }
 }
 
-export {
-  defer
+// Generate `defer` util
+export const defer = () => {
+  const pending = {}
+
+  pending.promise = new Promise((resolve, reject) => {
+    pending.resolve = resolve
+    pending.reject = reject
+  })
+
+  return pending
 }

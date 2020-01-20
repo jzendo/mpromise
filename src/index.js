@@ -28,7 +28,6 @@ class Promise {
     this.status_ = PENDING
     this.value_ = undefined
     this.pendingHandlers_ = []
-    this.promiseConstructor_ = Promise
 
     fn(this.resolve_.bind(this), this.reject_.bind(this))
   }
@@ -38,7 +37,7 @@ class Promise {
 
     if (value === this) {
       throw new TypeError('Chaining cycle detected for promise')
-    } else if (value instanceof this.promiseConstructor_) {
+    } else if (value instanceof this.constructor) {
       value.then(this.resolve_.bind(this), this.reject_.bind(this))
     } else if (isFunction(value) || isObject(value)) {
       let once = false
@@ -115,7 +114,7 @@ class Promise {
     }
 
     // Refer to Promise constructor
-    const PromiseConstructor = this.promiseConstructor_
+    const PromiseConstructor = this.constructor
 
     // Status: pending
     if (isPending(status_)) {
