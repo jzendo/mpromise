@@ -25,12 +25,10 @@ export const setupDeferThrow = promise => {
     if (promise) {
       const status = promise.status_
       // No rejected-handler
-      if (promise.pendingHandlers_.length == 0) {
+      if (promise.pendingHandlers_.length === 0) {
         // Throw when it is rejected
         if (isRejected(status)) {
           const value = promise.value_
-          // Mark rejected
-          promise.reject_(value)
           // Defer throw
           promise.deferThrowErr_ = getDeferThrowError(value, promise)
           return true

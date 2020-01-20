@@ -1,4 +1,4 @@
-/* global test, expect, jest */
+/* global test, expect */
 
 import Promise from '../index'
 

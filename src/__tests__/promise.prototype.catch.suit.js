@@ -1,4 +1,4 @@
-/* global test, expect, jest */
+/* global test, expect */
 
 import Promise from '../extend'
 
@@ -27,7 +27,6 @@ test('test Promise.prototype.catch #2', (done) => {
   })
 })
 
-
 // Test: arg(non-function)
 test('test Promise.prototype.catch #3', (done) => {
   const testError = new Error('test')
@@ -42,7 +41,7 @@ test('test Promise.prototype.catch #3', (done) => {
 test('test Promise.prototype.catch #4', (done) => {
   const testError = new Error('test')
   const promise1 = new Promise((resolve, reject) => reject(testError))
-  const promise2 = promise1.catch(err => {
+  promise1.catch(err => {
     expect(err).toBe(testError)
     done()
   })
@@ -63,17 +62,20 @@ test('test Promise.prototype.catch #5', (done) => {
 
 // Test: re-throw error
 test('test Promise.prototype.catch #6', (done) => {
-  let exception
   const testError = new Error('test')
   const testRethrowError = new Error('test')
   const promise1 = new Promise((resolve, reject) => reject(testError))
 
-  promise1.catch(err => {
-    throw testRethrowError
-  }).then(undefined, err => {
-    expect(err).toBe(testRethrowError)
-    done()
-  })
+  promise1
+    /* eslint-disable handle-callback-err */
+    .catch(err => {
+      throw testRethrowError
+    })
+    /* eslint-enable handle-callback-err */
+    .then(undefined, err => {
+      expect(err).toBe(testRethrowError)
+      done()
+    })
 })
 
 // Test: re-throw error
@@ -81,7 +83,7 @@ test('test Promise.prototype.catch #7', (done) => {
   const testError = new Error('test')
   const promise1 = new Promise((resolve, reject) => reject(testError))
 
-  const promise2 = promise1.then(undefined, err => {
+  promise1.then(undefined, err => {
     throw err
   }).catch(err => {
     expect(err).toBe(testError)

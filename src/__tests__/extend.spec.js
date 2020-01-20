@@ -7,7 +7,6 @@ import './promise.prototype.catch.suit'
 // defer
 import './extend.defer.suit'
 
-
 test('test Promise.prototype.then #1', done => {
   expect(typeof Promise === 'function').toBeTruthy()
 
@@ -47,6 +46,7 @@ test('test Promise.resolve args', async () => {
 test('test Promise.reject args #1', done => {
   expect(typeof Promise.reject === 'function').toBeTruthy()
 
+  // eslint-disable-next-line
   const promise1 = Promise.reject()
 
   promise1.deferThrowErr_.handler = error => {

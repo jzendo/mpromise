@@ -1,4 +1,4 @@
-/* global test, expect, jest */
+/* global test, expect */
 
 import { defer } from '../extend'
 
