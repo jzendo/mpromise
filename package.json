@@ -7,12 +7,16 @@
   "author": "zendo",
   "scripts": {
     "build": "npm run build:default && npm run build:extend",
-    "build:default": "cross-env NODE_ENV=production parcel build src/index.js --global Promise",
-    "build:extend": "cross-env NODE_ENV=production parcel build src/extend.js --global Promise",
+    "build:default": "cross-env NODE_ENV=production_base parcel build src/index.js --global Promise",
+    "build:extend": "cross-env NODE_ENV=production_extend parcel build src/extend.js --global Promise",
     "lint": "standard src/**/* test/**/*",
     "lint:fix": "standard --fix src/**/* test/**/*",
-    "test": "babel src/** test/** -d es5 && node es5/test/aplus_test.js",
-    "unit:test": "jest"
+    "test": "cross-env IMPL=base babel src/** test/** -d es5 && node es5/test/aplus_test.js",
+    "unit:test": "npm run unit:test:base && npm run unit:test:extend",
+    "unit:test:base": "cross-env IMPL=base jest",
+    "unit:test:extend": "cross-env IMPL=extend jest -c ./jest.config.extend.js",
+    "unit:test:coverage": "npm run unit:test:coverage:extend",
+    "unit:test:coverage:extend": "cross-env IMPL=extend jest -c ./jest.config.extend.js --coverage"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

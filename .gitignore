@@ -1,4 +1,5 @@
 node_modules
 es5
-dist
 .cache
+coverage
+coverage_extend

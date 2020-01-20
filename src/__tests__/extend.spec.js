@@ -2,8 +2,40 @@
 
 import Promise from '../extend'
 
-test('test Promise.resolve args', async () => {
+// Promise.prototype.catch suit
+import './promise.prototype.catch.suit'
+// defer
+import './extend.defer.suit'
+
+
+test('test Promise.prototype.then #1', done => {
   expect(typeof Promise === 'function').toBeTruthy()
+
+  const testResult = 'test'
+
+  new Promise(resolve => resolve(testResult))
+    .then()
+    .then(v => {
+      expect(v).toBe(testResult)
+      done()
+    })
+})
+
+test('test Promise.prototype.then #2', done => {
+  const testResult = new Error('test')
+
+  new Promise(resolve => resolve(testResult))
+    .then(() => {
+      throw testResult
+    })
+    .catch(v => {
+      expect(v).toBe(testResult)
+      done()
+    })
+})
+
+test('test Promise.resolve args', async () => {
+  expect(typeof Promise.resolve === 'function').toBeTruthy()
 
   expect(() => {
     Promise.resolve()
@@ -12,28 +44,56 @@ test('test Promise.resolve args', async () => {
   expect(await Promise.resolve(1)).toBe(1)
 })
 
-test('test Promise.reject args', async () => {
-  expect(typeof Promise === 'function').toBeTruthy()
+test('test Promise.reject args #1', done => {
+  expect(typeof Promise.reject === 'function').toBeTruthy()
 
-  expect(() => {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    Promise.reject()
-  }).not.toThrow()
+  const promise1 = Promise.reject()
 
-  const ex = new Error('test')
-  let err = false
-
-  try {
-    await Promise.reject(ex)
-  } catch (e) {
-    err = true
+  promise1.deferThrowErr_.handler = error => {
+    expect(error).toBeUndefined()
+    done()
   }
+})
 
-  expect(err).toBeTruthy()
+test('test Promise.reject args #2', done => {
+  expect(typeof Promise.reject === 'function').toBeTruthy()
+
+  const testError = new Error('test')
+  const promise1 = Promise.reject(testError)
+
+  promise1.deferThrowErr_.handler = error => {
+    expect(error).toBe(testError)
+    done()
+  }
+})
+
+test('test Promise.reject args #3', done => {
+  expect(typeof Promise.reject === 'function').toBeTruthy()
+
+  const testError = new Error('test')
+  const promise = Promise.reject(testError)
+  const promise1 = Promise.reject(promise)
+
+  promise1.deferThrowErr_.handler = error => {
+    expect(error).toBe(testError)
+    done()
+  }
+})
+
+test('test Promise.reject args #4', done => {
+  expect(typeof Promise.reject === 'function').toBeTruthy()
+
+  const testError = new Error('test')
+  const promise = Promise.reject(testError)
+
+  Promise.reject(promise).then(undefined, err => {
+    expect(err).toBe(testError)
+    done()
+  })
 })
 
 test('test Promise.all args', () => {
-  expect(typeof Promise === 'function').toBeTruthy()
+  expect(typeof Promise.all === 'function').toBeTruthy()
 
   expect(() => {
     Promise.all()
@@ -107,7 +167,7 @@ test('test Promise.all #2', async () => {
 })
 
 test('test Promise.race args', () => {
-  expect(typeof Promise === 'function').toBeTruthy()
+  expect(typeof Promise.race === 'function').toBeTruthy()
 
   expect(() => {
     Promise.race()

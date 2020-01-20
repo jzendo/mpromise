@@ -16,7 +16,8 @@ import {
   flushPendingHandlers,
   isFunction,
   isObject,
-  runAsync
+  runAsync,
+  teardownDeferThrow
 } from './util'
 
 /**
@@ -27,6 +28,7 @@ class Promise {
     this.status_ = PENDING
     this.value_ = undefined
     this.pendingHandlers_ = []
+    this.promiseConstructor_ = Promise
 
     fn(this.resolve_.bind(this), this.reject_.bind(this))
   }
@@ -36,7 +38,7 @@ class Promise {
 
     if (value === this) {
       throw new TypeError('Chaining cycle detected for promise')
-    } else if (value instanceof Promise) {
+    } else if (value instanceof this.promiseConstructor_) {
       value.then(this.resolve_.bind(this), this.reject_.bind(this))
     } else if (isFunction(value) || isObject(value)) {
       let once = false
@@ -88,6 +90,8 @@ class Promise {
   }
 
   then (onFulfilled, onRejected) {
+    teardownDeferThrow(this)
+
     const { status_, value_ } = this
 
     const handleFulfillProxy = (resolve, reject) => val => {
@@ -102,15 +106,20 @@ class Promise {
     const handleRejectProxy = (resolve, reject) => err => {
       try {
         if (isFunction(onRejected)) resolve(onRejected(err))
-        else reject(err)
+        else {
+          reject(err)
+        }
       } catch (e) {
         reject(e)
       }
     }
 
+    // Refer to Promise constructor
+    const PromiseConstructor = this.promiseConstructor_
+
     // Status: pending
     if (isPending(status_)) {
-      return new Promise((resolve, reject) => {
+      return new PromiseConstructor((resolve, reject) => {
         this.pendingHandlers_.push([
           handleFulfillProxy(resolve, reject),
           handleRejectProxy(resolve, reject)
@@ -120,7 +129,7 @@ class Promise {
 
     // Status: fulfilled
     if (isFulfilled(status_)) {
-      return new Promise((resolve, reject) =>
+      return new PromiseConstructor((resolve, reject) =>
         // NOTE: onFulfilled should be called async mode
         runAsync(() => {
           handleFulfillProxy(resolve, reject)(value_)
@@ -130,7 +139,7 @@ class Promise {
 
     // Status: rejected
     if (isRejected(status_)) {
-      return new Promise((resolve, reject) =>
+      return new PromiseConstructor((resolve, reject) =>
         // NOTE: onRejected should be called async mode
         runAsync(() => {
           handleRejectProxy(resolve, reject)(value_)

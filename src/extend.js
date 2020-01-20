@@ -1,4 +1,5 @@
 import PromiseBase, { defer } from './index'
+import { teardownDeferThrow } from './util'
 
 function checkIterable (iterable) {
   // TODO: check iterable
@@ -18,6 +19,19 @@ function checkIterable (iterable) {
  * @class Promise
  */
 export default class Promise extends PromiseBase {
+  constructor(fn) {
+    super(fn)
+    this.promiseConstructor_ = Promise
+  }
+
+  /**
+   * Handle exception
+   * @param {function | undefined} fn exception handler
+   */
+  catch (fn) {
+    teardownDeferThrow(this)
+    return this.then(undefined, fn)
+  }
   /**
    * @static Promise.resolve
    * @param {*} v
