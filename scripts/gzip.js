@@ -1,34 +1,28 @@
 const zlib = require('zlib')
 const fs = require('fs')
 
-function gzipFile(fileName) {
-  fs.stat(fileName, (error, stats) => {
-    if (error) throw error
+function gzipFile (fileName) {
+  // eslint-disable-next-line no-unused-vars
+  const stats = fs.statSync(fileName)
+  const istream = fs.createReadStream(fileName)
+  const ostream = fs.createWriteStream(`${fileName}.gz`)
+  return istream.pipe(zlib.createGzip()).pipe(ostream)
+}
 
-    const istream = fs.createReadStream(fileName)
-    const ostream = fs.createWriteStream(`${fileName}.gz`)
-
-    istream.pipe(zlib.createGzip()).pipe(ostream)
+function getBeGzippedFiles () {
+  const items = fs.readdirSync('./dist')
+  // Filter files which will do gzip.
+  return items.filter(fileName => {
+    if (/\.js$/.test(fileName)) {
+      return true
+    }
   })
 }
 
-function getWillGzipFiles() {
+// Entry
+function main () {
   try {
-    const items = fs.readdirSync('./dist')
-    // Filter files which will do gzip.
-    return items.filter(fileName => {
-      if (/\.js$/.test(fileName)) {
-        return true
-      }
-    })
-  } catch (e) {
-    throw e
-  }
-}
-
-function main() {
-  try {
-    const files = getWillGzipFiles()
+    const files = getBeGzippedFiles()
     console.log('\nbuild gzip files:')
     files.forEach(fileName => {
       console.log(`- generating "${fileName}.gz" file...`)
@@ -40,4 +34,5 @@ function main() {
   }
 }
 
+// Start gzip
 main()

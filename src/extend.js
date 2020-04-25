@@ -11,6 +11,7 @@ function checkIterable (iterable) {
 /**
  * Extend Promise
  *
+ * - Promise.prototype.catch
  * - Promise.resolve
  * - Promise.reject
  * - Promise.all

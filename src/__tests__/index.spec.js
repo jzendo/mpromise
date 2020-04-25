@@ -1,31 +1,40 @@
-/* global test, expect */
+/* global describe, test, expect */
 
-import Promise from '../index'
+import Promise, { defer } from '../index'
 
-test('test Promise.prototype.then #1', done => {
-  expect(typeof Promise === 'function').toBeTruthy()
+// defer
+import deferSuit from './extend.defer.suit'
 
-  const testResult = 'test'
+describe('default promise', () => {
+  deferSuit(defer)
 
-  new Promise(resolve => resolve(testResult))
-    .then()
-    .then(v => {
-      expect(v).toBe(testResult)
-      done()
+  describe('Promise.prototype.then', () => {
+    test('should call the fulfilled when the prev-then block is called with no argument', done => {
+      expect(typeof Promise === 'function').toBeTruthy()
+
+      const testResult = 'test'
+
+      new Promise(resolve => resolve(testResult))
+        .then()
+        .then(v => {
+          expect(v).toBe(testResult)
+          done()
+        })
     })
-})
 
-test('test Promise.prototype.then #2', done => {
-  expect(typeof Promise === 'function').toBeTruthy()
+    test('should call the rejected when the pre-then block be rejected in the fulfilled', done => {
+      expect(typeof Promise === 'function').toBeTruthy()
 
-  const testResult = new Error('test')
+      const testResult = new Error('test')
 
-  new Promise(resolve => resolve(testResult))
-    .then(() => {
-      throw testResult
+      new Promise(resolve => resolve(testResult))
+        .then(() => {
+          throw testResult
+        })
+        .then(undefined, v => {
+          expect(v).toBe(testResult)
+          done()
+        })
     })
-    .then(undefined, v => {
-      expect(v).toBe(testResult)
-      done()
-    })
+  })
 })

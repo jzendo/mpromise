@@ -1,39 +1,41 @@
-/* global test, expect */
+/* global describe, test, expect */
 
-import { defer } from '../extend'
+export default defer => {
+  describe('defer', () => {
+    test('should be function', () => {
+      expect(typeof defer === 'function').toBeTruthy()
+    })
 
-test('test defer #1', () => {
-  expect(typeof defer === 'function').toBeTruthy()
-})
+    test('should be resolved', (done) => {
+      const {
+        resolve,
+        promise
+      } = defer()
 
-test('test defer #2', (done) => {
-  const {
-    resolve,
-    promise
-  } = defer()
+      const testResult = 123
 
-  const testResult = 123
+      promise.then(v => {
+        expect(v).toBe(testResult)
+        done()
+      })
 
-  promise.then(v => {
-    expect(v).toBe(testResult)
-    done()
+      resolve(testResult)
+    })
+
+    test('should throw exception', (done) => {
+      const {
+        reject,
+        promise
+      } = defer()
+
+      const testError = new Error('test')
+
+      promise.then(undefined, err => {
+        expect(err).toBe(testError)
+        done()
+      })
+
+      reject(testError)
+    })
   })
-
-  resolve(testResult)
-})
-
-test('test defer #3', (done) => {
-  const {
-    reject,
-    promise
-  } = defer()
-
-  const testError = new Error('test')
-
-  promise.then(undefined, err => {
-    expect(err).toBe(testError)
-    done()
-  })
-
-  reject(testError)
-})
+}
